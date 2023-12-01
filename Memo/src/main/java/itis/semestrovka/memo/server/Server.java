@@ -2,6 +2,7 @@ package itis.semestrovka.memo.server;
 
 import itis.semestrovka.memo.server.Connection;
 import itis.semestrovka.memo.server.Room;
+import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -70,5 +71,8 @@ public class Server {
             e.printStackTrace();
         }
 
+    }
+
+    public void receiveMessage(VBox listRooms) {
     }
 }

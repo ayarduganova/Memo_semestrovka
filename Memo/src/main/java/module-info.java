@@ -3,8 +3,7 @@ module itis.semestrovka.memo {
     requires javafx.fxml;
 
 
-    opens itis.semestrovka.memo to javafx.fxml;
-    exports itis.semestrovka.memo;
+
     exports itis.semestrovka.memo.client;
     opens itis.semestrovka.memo.client to javafx.fxml;
     exports itis.semestrovka.memo.server;
