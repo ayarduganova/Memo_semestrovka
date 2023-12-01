@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itis.semestrovka.memo.client.MemoController">
+  <padding>
+    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+  </padding>
+
+  <ScrollPane fx:id="scroll" prefHeight="329.0" prefWidth="567.0">
+    <content>
+      <VBox fx:id="listRooms" prefHeight="324.0" prefWidth="560.0" />
+    </content>
+  </ScrollPane>
+
+  <Label  maxWidth="250.0" text="Введите название комнаты, чтобы создать новую или войти в существующую:" textAlignment="CENTER" wrapText="true">
+      </Label>
+   <TextField fx:id="roomName" maxWidth="250.0" prefHeight="26.0" prefWidth="200.0"/>
+   <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="185.0" layoutY="435.0" maxWidth="250.0" text="Введите имя:" wrapText="true" />
+   <TextField fx:id="playerName" layoutX="185.0" layoutY="473.0" maxWidth="250.0" prefHeight="26.0" prefWidth="200.0" />
+  <Button fx:id="createOrAdd" text="Войти" />
+</VBox>
