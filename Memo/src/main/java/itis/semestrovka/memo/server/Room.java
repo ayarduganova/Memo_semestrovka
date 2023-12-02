@@ -1,14 +1,22 @@
 package itis.semestrovka.memo.server;
 
 public class Room {
-    private String name;
-    private Integer roomNumber;
-    private Integer size;
-    private Integer real_size;
 
-    public Room(String name, Integer roomNumber) {
+    private String name;
+    private Integer realSize;
+    private Integer maxSize;
+
+    public Room(String name, Integer maxSize) {
         this.name = name;
-        this.roomNumber = roomNumber;
+        this.maxSize = maxSize;
+    }
+
+    public Integer getRealSize() {
+        return realSize;
+    }
+
+    public void setRealSize(Integer realSize) {
+        this.realSize = realSize;
     }
 
     public String getName() {
@@ -19,11 +27,11 @@ public class Room {
         this.name = name;
     }
 
-    public Integer getRoomNumber() {
-        return roomNumber;
+    public Integer getMaxSize() {
+        return maxSize;
     }
 
-    public void setRoomNumber(Integer roomNumber) {
-        this.roomNumber = roomNumber;
+    public void setMaxSize(Integer maxSize) {
+        this.maxSize = maxSize;
     }
 }
