@@ -13,6 +13,7 @@ public class Client {
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+    private String playerName;
 
     public Client(Socket socket) {
         try{
@@ -40,20 +41,6 @@ public class Client {
             e.printStackTrace();
         }
     }
-
-
-    public void sendMessageToServer(String messageToServer) {
-//        try{
-//            bufferedWriter.write(messageToServer);
-//            bufferedWriter.newLine();
-//            bufferedWriter.flush();
-//        }catch(IOException e){
-//            e.printStackTrace();
-//            System.out.println("Error sending message to the Server!");
-//            closeEverything(socket, bufferedReader, bufferedWriter);
-//        }
-    }
-
     public void receiveMessageFromServer(VBox vbox_messages) {
         new Thread(new Runnable() {
             @Override
@@ -68,6 +55,7 @@ public class Client {
                         System.out.println(roomSize);
 
                         EnterToRoomController.addLabel(roomName, roomSize, vbox_messages);
+
                     }catch (IOException e){
                         e.printStackTrace();
                         System.out.println("Error receiving message from the Server!");
@@ -88,10 +76,19 @@ public class Client {
             bufferedWriter.write(room.getMaxSize().toString());
             bufferedWriter.newLine();
             bufferedWriter.flush();
+
         }catch(IOException e){
             e.printStackTrace();
             System.out.println("Error sending message to the Server!");
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 }

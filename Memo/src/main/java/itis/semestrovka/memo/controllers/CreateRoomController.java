@@ -42,6 +42,9 @@ public class CreateRoomController implements Initializable {
     private ChoiceBox<Integer> choiceNumber;
     @FXML
     private TextField roomName;
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
     private Client client;
     public static List<String> messages = new ArrayList<>();
 
@@ -62,11 +65,33 @@ public class CreateRoomController implements Initializable {
                 String player = playerName.getText();
                 Room room = new Room(messageToSend, number);
                 if (!messageToSend.isEmpty() && !player.isEmpty()) {
-                    System.out.println("dtbgfbrfhtghgrtgtrgverferrrrrrrrrrrrrrrrrrrg");
+
                     client.sendRoom(room);
-                    client.sendMessageToServer(player);
+                    client.setPlayerName(player);
+
+//                    Room.setClient(client);
+
                     roomName.clear();
                     playerName.clear();
+
+                    try {
+
+
+                        DataHolder.setRoom(room);
+                        DataHolder.setClient(client);
+
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
+
+                        root = loader.load();
+
+                        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                        scene = new Scene(root);
+                        stage.setScene(scene);
+
+                        stage.show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });

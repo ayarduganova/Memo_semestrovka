@@ -19,7 +19,6 @@ public class NewServer {
 
         while(!serverSocket.isClosed()){
             Socket client = serverSocket.accept();
-            System.out.println("опа");
             new Connection(client);
         }
     }

@@ -1,4 +1,4 @@
-package itis.semestrovka.memo.client;
+package itis.semestrovka.memo.controllers;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;

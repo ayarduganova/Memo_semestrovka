@@ -20,6 +20,7 @@ public class Connection implements Runnable {
         this.reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
         this.thread = new Thread(this);
         connections.add(this);
+        sendMessages(rooms, this);
         thread.start();
     }
 
@@ -27,15 +28,11 @@ public class Connection implements Runnable {
     public void run() {
         String message;
         String message1;
-        try {
-            sendMessages(rooms);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         while(client.isConnected()){
             try {
                 message = reader.readLine();
                 rooms.add(message);
+
                 message1 = reader.readLine();
                 rooms.add(message1);
 
@@ -47,15 +44,12 @@ public class Connection implements Runnable {
         }
     }
 
-    private void sendMessages(List<String> messages) throws IOException {
-        for(Connection c : connections){
-                for(String s : messages){
-                    c.writer.write(s);
-                    c.writer.newLine();
-                    c.writer.flush();
-                }
+    private void sendMessages(List<String> messages, Connection c) throws IOException {
+        for(String s : messages){
+            c.writer.write(s);
+            c.writer.newLine();
+            c.writer.flush();
         }
-
     }
 
     private void sendMessage(String message) throws IOException {
@@ -63,7 +57,6 @@ public class Connection implements Runnable {
             c.writer.write(message);
             c.writer.newLine();
             c.writer.flush();
-
         }
     }
 }

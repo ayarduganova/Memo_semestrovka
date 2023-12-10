@@ -11,7 +11,7 @@
 
     <ScrollPane fx:id="sp_main" fitToWidth="true" layoutX="30" layoutY="70" prefHeight="256" prefWidth="418">
         <content>
-            <VBox fx:id="vbox_messages" prefHeight="248" prefWidth="412"/>
+            <VBox fx:id="vbox_messages" prefHeight="248" prefWidth="412" />
         </content>
     </ScrollPane>
 
@@ -20,5 +20,5 @@
    <TextField fx:id="roomName" maxWidth="250.0" prefHeight="26.0" prefWidth="200.0" />
    <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="185.0" layoutY="435.0" maxWidth="250.0" text="Введите имя:" wrapText="true" />
    <TextField fx:id="playerName" layoutX="185.0" layoutY="473.0" maxWidth="250.0" prefHeight="26.0" prefWidth="200.0" />
-  <Button fx:id="createOrAdd" text="Войти" />
+  <Button fx:id="enter" onAction="#switchToGame" text="Войти" />
 </VBox>

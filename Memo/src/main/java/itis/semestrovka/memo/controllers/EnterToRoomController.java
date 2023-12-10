@@ -8,9 +8,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
@@ -19,6 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -27,12 +32,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static itis.semestrovka.memo.controllers.DataHolder.room;
+
 public class EnterToRoomController implements Initializable {
     @FXML
     private VBox vbox_messages;
     @FXML
     private ScrollPane sp_main;
+    @FXML
+    private TextField roomName;
+    @FXML
+    private TextField playerName;
     private Client client;
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
     public static List<Room> rooms = new ArrayList<>();
 
     @Override
@@ -57,8 +71,10 @@ public class EnterToRoomController implements Initializable {
 
     public static void addLabel(String messageFromServer, String roomSize, VBox vBox){
         Room room = new Room(messageFromServer, Integer.parseInt(roomSize));
+        System.out.println(rooms);
         if(!rooms.contains(room)){
-
+            rooms.add(room);
+            System.out.println(rooms);
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             hBox.setPadding(new Insets(10, 10, 10, 10));
@@ -70,12 +86,10 @@ public class EnterToRoomController implements Initializable {
 
             textFlow.setStyle(
                     "-fx-background-color: #b86c88;" +
-                            "-fx-background-radius: 20px;" +
                     "-fx-font-size: 20px;");
 
             textFlow.setPadding(new Insets(5, 10, 5, 10));
             hBox.getChildren().add(textFlow);
-            rooms.add(room);
 
             Platform.runLater(new Runnable() {
                 @Override
@@ -83,6 +97,31 @@ public class EnterToRoomController implements Initializable {
                     vBox.getChildren().add(hBox);
                 }
             });
+        }
+    }
+
+    public void switchToGame(ActionEvent event) throws IOException {
+        for(Room r : rooms){
+            if(roomName.getText().equals(r.getName())){
+
+                client.setPlayerName(playerName.getText());
+
+
+                DataHolder.setRoom(r);
+                DataHolder.setClient(client);
+
+//                Room.setClient(client);
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
+                root = loader.load();
+                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                scene = new Scene(root);
+                stage.setScene(scene);
+
+                GameController controller = loader.getController();
+
+                stage.show();
+            }
         }
     }
 
