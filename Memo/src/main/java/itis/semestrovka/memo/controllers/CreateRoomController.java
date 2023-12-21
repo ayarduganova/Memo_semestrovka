@@ -66,29 +66,41 @@ public class CreateRoomController implements Initializable {
                 Room room = new Room(messageToSend, number);
                 if (!messageToSend.isEmpty() && !player.isEmpty()) {
 
-                    client.sendRoom(room);
+                    client.sendMessage(messageToSend + ";" + number + ";" + player);
                     client.setPlayerName(player);
 
-//                    Room.setClient(client);
-
-                    roomName.clear();
-                    playerName.clear();
+                    System.out.println(messageToSend + ";" + number + ";" + player);
 
                     try {
-
-
-                        DataHolder.setRoom(room);
-                        DataHolder.setClient(client);
-
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
 
                         root = loader.load();
 
+                        GameController gameController = loader.getController();
+                        gameController.setClient(client);
+                        gameController.setRoom(room);
+
                         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-                        scene = new Scene(root);
-                        stage.setScene(scene);
+                        int x;
+                        int y;
+                        if(room.getMaxSize() == 2){
+                            x = 800;
+                            y = 800;
+                            stage.setScene(new Scene(root, x, y));
+                        } else if (room.getMaxSize() == 3) {
+                            x = 1300;
+                            y = 800;
+                            stage.setScene(new Scene(root, x, y));
+                        }
+                        else{
+                            stage.setScene(new Scene(root));
+                            stage.setFullScreen(true);
+                        }
 
                         stage.show();
+
+                        roomName.clear();
+                        playerName.clear();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

@@ -1,6 +1,8 @@
 package itis.semestrovka.memo.controllers;
 
 import itis.semestrovka.memo.client.Client;
+import itis.semestrovka.memo.listener.RoomListener;
+import itis.semestrovka.memo.server.Connection;
 import itis.semestrovka.memo.server.Room;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -31,8 +33,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
-import static itis.semestrovka.memo.controllers.DataHolder.room;
 
 public class EnterToRoomController implements Initializable {
     @FXML
@@ -43,6 +45,7 @@ public class EnterToRoomController implements Initializable {
     private TextField roomName;
     @FXML
     private TextField playerName;
+    RoomListener roomListener;
     private Client client;
     private Stage stage;
     private Scene scene;
@@ -64,23 +67,25 @@ public class EnterToRoomController implements Initializable {
                 sp_main.setVvalue((Double) newValue);
             }
         });
+        roomListener = new RoomListener(this.vbox_messages, this.client.getBufferedReader());
+        roomListener.start();
 
-        client.receiveMessageFromServer(vbox_messages);
+
+//        client.receiveMessageFromServer(vbox_messages);
 
     }
 
     public static void addLabel(String messageFromServer, String roomSize, VBox vBox){
-        Room room = new Room(messageFromServer, Integer.parseInt(roomSize));
-        System.out.println(rooms);
-        if(!rooms.contains(room)){
-            rooms.add(room);
+        Room r = new Room(messageFromServer, Integer.parseInt(roomSize));
+        if(!rooms.contains(r)){
+            rooms.add(r);
             System.out.println(rooms);
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             hBox.setPadding(new Insets(10, 10, 10, 10));
 
-            Text text = new Text("Название: " + room.getName());
-            Text text1 = new Text("  Кол-во человек: " + room.getMaxSize().toString());
+            Text text = new Text("Название: " + messageFromServer);
+            Text text1 = new Text("  Кол-во человек: " + roomSize);
 
             TextFlow textFlow = new TextFlow(text, text1);
 
@@ -90,7 +95,6 @@ public class EnterToRoomController implements Initializable {
 
             textFlow.setPadding(new Insets(5, 10, 5, 10));
             hBox.getChildren().add(textFlow);
-
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -101,28 +105,49 @@ public class EnterToRoomController implements Initializable {
     }
 
     public void switchToGame(ActionEvent event) throws IOException {
+        System.out.println(roomListener.isState());
+
+        roomListener.changeState();
+
+        System.out.println(roomListener.isState());
+
+        client.setPlayerName(playerName.getText());
+        client.sendMessage(roomName.getText() + ";" + client.getPlayerName());
+
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
+        root = loader.load();
+
+        GameController gameController = loader.getController();
+        gameController.setClient(client);
+        Room room = null;
         for(Room r : rooms){
-            if(roomName.getText().equals(r.getName())){
-
-                client.setPlayerName(playerName.getText());
-
-
-                DataHolder.setRoom(r);
-                DataHolder.setClient(client);
-
-//                Room.setClient(client);
-
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
-                root = loader.load();
-                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-
-                GameController controller = loader.getController();
-
-                stage.show();
+            if(r.getName().equals(roomName.getText())){
+                room = r;
+                gameController.setRoom(r);
             }
         }
+
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        int x;
+        int y;
+        if(room.getMaxSize() == 2){
+            x = 800;
+            y = 800;
+            stage.setScene(new Scene(root, x, y));
+        } else if (room.getMaxSize() == 3) {
+            x = 1300;
+            y = 800;
+            stage.setScene(new Scene(root, x, y));
+        }
+        else{
+            stage.setScene(new Scene(root));
+            stage.setFullScreen(true);
+        }
+
+        stage.show();
+
     }
 
 }

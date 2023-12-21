@@ -1,31 +1,38 @@
 package itis.semestrovka.memo.client;
 
-import itis.semestrovka.memo.controllers.CreateRoomController;
-import itis.semestrovka.memo.controllers.EnterToRoomController;
 import itis.semestrovka.memo.server.Room;
-import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Client {
-
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String playerName;
+    public static Set<Client> clients = new HashSet<>();
+
+    private Room room;
 
     public Client(Socket socket) {
         try{
             this.socket = socket;
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            clients.add(this);
         }catch(IOException e){
             System.out.println("Error creating Client!");
             e.printStackTrace();
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
     private void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
         try{
             if (bufferedReader != null) {
@@ -41,39 +48,11 @@ public class Client {
             e.printStackTrace();
         }
     }
-    public void receiveMessageFromServer(VBox vbox_messages) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(socket.isConnected()){
-                    try{
 
-                        String roomName = bufferedReader.readLine();
-                        String roomSize = bufferedReader.readLine();
-
-                        System.out.println(roomName);
-                        System.out.println(roomSize);
-
-                        EnterToRoomController.addLabel(roomName, roomSize, vbox_messages);
-
-                    }catch (IOException e){
-                        e.printStackTrace();
-                        System.out.println("Error receiving message from the Server!");
-                        closeEverything(socket, bufferedReader, bufferedWriter);
-                        break;
-                    }
-                }
-            }
-        }).start();
-    }
-
-    public void sendRoom(Room room) {
+    public void sendMessage(String message) {
         try{
-            bufferedWriter.write(room.getName());
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
 
-            bufferedWriter.write(room.getMaxSize().toString());
+            bufferedWriter.write(message);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
@@ -90,5 +69,25 @@ public class Client {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room r) {
+        this.room = r;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public void setBufferedReader(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
     }
 }

@@ -16,7 +16,7 @@ public class ClientApplication extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/itis/semestrovka/memo/choose-view.fxml"));
         primaryStage.setTitle("Client!");
-        primaryStage.setScene(new Scene(root, 480, 400));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
