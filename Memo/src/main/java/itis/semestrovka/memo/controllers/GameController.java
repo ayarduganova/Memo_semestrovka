@@ -131,22 +131,21 @@ public class GameController implements Initializable {
 
     public static void getFinal(String mes, Label info) {
 
-        gameProcessListener.interrupt();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 String[] strings = mes.split(";");
 
-                if(strings.length > 1){
-                    if(strings[0].equals(client.getPlayerName()) || strings[1].equals(client.getPlayerName())){
+                if(strings.length > 2){
+                    if(strings[1].equals(client.getPlayerName()) || strings[2].equals(client.getPlayerName())){
                         info.setText("Вы выиграли");
                     }
                     else {
                         info.setText(strings[0] + " и " + strings[1] + " выиграли");
                     }
                 }
-                if(strings.length == 1){
-                    if(strings[0].equals(client.getPlayerName())){
+                if(strings.length == 2){
+                    if(strings[1].equals(client.getPlayerName())){
                         info.setText("Вы выиграли");
                     }
                     else{
