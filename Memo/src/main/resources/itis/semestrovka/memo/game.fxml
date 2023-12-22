@@ -3,10 +3,11 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itis.semestrovka.memo.controllers.GameController">
     <children>
-        <AnchorPane fx:id="root" minHeight="373.0" minWidth="439.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+        <AnchorPane fx:id="root1" minHeight="373.0" minWidth="439.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
             <children>
                 <BorderPane fx:id="body" styleClass="body" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                     <top>
@@ -20,12 +21,24 @@
                         <HBox alignment="CENTER">
                             <GridPane fx:id="gameMatrix" alignment="CENTER" hgap="10" prefHeight="352.0" prefWidth="444.0" vgap="10" xmlns:fx="http://javafx.com/fxml">
                                 <padding><Insets bottom="25" left="25" right="25" top="25" /></padding>
+                        <columnConstraints>
+                           <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints />
+                        </rowConstraints>
 
                             </GridPane>
                         </HBox>
                     </center>
                 </BorderPane>
-                <Pane fx:id="handPaneMac" prefHeight="14.0" AnchorPane.leftAnchor="69.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
+                <Pane fx:id="handPaneMac" layoutX="90.0" prefHeight="20.0" prefWidth="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="2.0">
+               <children>
+                         <Label fx:id="mark" layoutX="50.0" layoutY="-8.0" prefHeight="62.0" text="0">
+                     <font>
+                        <Font size="42.0" />
+                     </font></Label>
+               </children></Pane>
             </children>
         </AnchorPane>
     </children>

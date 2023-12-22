@@ -12,8 +12,10 @@ import java.io.IOException;
 
 public class ClientApplication extends Application {
 
+    private static Stage stage;
     @Override
     public void start(Stage primaryStage) throws IOException {
+        stage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/itis/semestrovka/memo/choose-view.fxml"));
         primaryStage.setTitle("Client!");
         primaryStage.setScene(new Scene(root));
@@ -22,5 +24,13 @@ public class ClientApplication extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public static Stage getStage() {
+        return stage;
+    }
+
+    public static void setScene(Scene scene) {
+        stage.setScene(scene);
     }
 }

@@ -23,11 +23,11 @@ public class RoomListener extends Thread {
         String message;
         while (state) {
             try {
-                try {
-                    sleep(8000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+//                try {
+////                    sleep(8000);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
                 message = this.br.readLine();
 
                 System.out.println("получили : " + message);

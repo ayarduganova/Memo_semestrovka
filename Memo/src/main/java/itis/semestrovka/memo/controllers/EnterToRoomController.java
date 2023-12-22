@@ -1,9 +1,14 @@
 package itis.semestrovka.memo.controllers;
 
 import itis.semestrovka.memo.client.Client;
+import itis.semestrovka.memo.client.ClientApplication;
+import itis.semestrovka.memo.game.Board;
+import itis.semestrovka.memo.listener.GameProcessListener;
 import itis.semestrovka.memo.listener.RoomListener;
+import itis.semestrovka.memo.protocol.Message;
 import itis.semestrovka.memo.server.Connection;
 import itis.semestrovka.memo.server.Room;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,11 +26,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -47,8 +54,6 @@ public class EnterToRoomController implements Initializable {
     private TextField playerName;
     RoomListener roomListener;
     private Client client;
-    private Stage stage;
-    private Scene scene;
     private Parent root;
     public static List<Room> rooms = new ArrayList<>();
 
@@ -105,48 +110,54 @@ public class EnterToRoomController implements Initializable {
     }
 
     public void switchToGame(ActionEvent event) throws IOException {
-        System.out.println(roomListener.isState());
 
         roomListener.changeState();
 
-        System.out.println(roomListener.isState());
-
-        client.setPlayerName(playerName.getText());
-        client.sendMessage(roomName.getText() + ";" + client.getPlayerName());
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished( actionEvent -> {
 
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
-        root = loader.load();
+            client.setPlayerName(playerName.getText());
+            client.sendMessage(Message.createMessage("enter", roomName.getText() + ";" + client.getPlayerName()));
 
-        GameController gameController = loader.getController();
-        gameController.setClient(client);
-        Room room = null;
-        for(Room r : rooms){
-            if(r.getName().equals(roomName.getText())){
-                room = r;
-                gameController.setRoom(r);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
+            try {
+                root = loader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }
 
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            GameController gameController = loader.getController();
+            gameController.setClient(client);
+            Room room = null;
+            for(Room r : rooms){
+                if(r.getName().equals(roomName.getText())){
+                    room = r;
+                    gameController.setRoom(r);
+                }
+            }
 
-        int x;
-        int y;
-        if(room.getMaxSize() == 2){
-            x = 800;
-            y = 800;
-            stage.setScene(new Scene(root, x, y));
-        } else if (room.getMaxSize() == 3) {
-            x = 1300;
-            y = 800;
-            stage.setScene(new Scene(root, x, y));
-        }
-        else{
-            stage.setScene(new Scene(root));
-            stage.setFullScreen(true);
-        }
+            Scene scene;
+            int x;
+            int y;
+            if(room.getMaxSize() == 2){
+                x = 800;
+                y = 800;
+                scene = new Scene(root, x, y);
+            } else if (room.getMaxSize() == 3) {
+                x = 1300;
+                y = 800;
+                scene = new Scene(root, x, y);
+            }
+            else{
+                scene = new Scene(root);
+            }
 
-        stage.show();
+            ClientApplication.setScene(scene);
+
+        });
+        pause.play();
 
     }
 

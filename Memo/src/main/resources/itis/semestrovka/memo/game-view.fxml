@@ -4,13 +4,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itis.semestrovka.memo.controllers">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itis.semestrovka.memo.controllers.FinalController">
    <children>
-      <Label layoutX="220.0" layoutY="157.0" prefHeight="64.0" prefWidth="160.0" text="Молодец">
+      <Label fx:id="end" layoutX="220.0" layoutY="157.0" prefHeight="64.0" prefWidth="160.0">
          <font>
             <Font size="33.0" />
          </font>
       </Label>
-      <VBox fx:id="vbox" layoutX="64.0" layoutY="57.0" prefHeight="200.0" prefWidth="100.0" />
    </children>
 </AnchorPane>

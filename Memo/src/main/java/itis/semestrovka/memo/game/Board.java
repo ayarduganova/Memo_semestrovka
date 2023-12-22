@@ -24,8 +24,31 @@ public class Board {
 
     public Board(){
     }
+    public Board(String message){
+        String[] strings = message.split(";");
+        System.out.println(strings.length);
 
-    public void populateMatrix(){
+        if(strings.length == 36){
+            this.boardRow = this.boardCol = 6;
+        } else if (strings.length == 84) {
+            this.boardRow = 12;
+            this.boardCol = 7;
+        }
+        else {
+            this.boardRow = 13;
+            this.boardCol = 8;
+        }
+        this.board = new Cell[boardRow][boardCol];
+        int k = 0;
+        for(int i = 0; i < boardRow; i++){
+            for(int j = 0; j < boardCol; j++){
+                board[i][j] = new Cell(strings[k], i, j);
+                k++;
+            }
+        }
+    }
+
+    public Cell[][] populateMatrix(){
         String[] images = {"piranha", "toucan", "lion", "crocodile", "tiger"};
         Random random = new Random();
         while(!isBoardFull()){
@@ -53,6 +76,7 @@ public class Board {
             board[randomRow2][randomCol2] = new Cell(randomImageSelected, randomRow2, randomCol2);
 
         }
+        return board;
     }
 
     private boolean isBoardFull() {

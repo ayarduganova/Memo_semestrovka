@@ -12,6 +12,12 @@ public class Client {
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String playerName;
+    private int marks = 0;
+
+    public void setMarks(int marks) {
+        this.marks = marks;
+    }
+
     public static Set<Client> clients = new HashSet<>();
 
     private Room room;

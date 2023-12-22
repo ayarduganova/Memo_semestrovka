@@ -1,6 +1,10 @@
 package itis.semestrovka.memo.controllers;
 
 import itis.semestrovka.memo.client.Client;
+import itis.semestrovka.memo.client.ClientApplication;
+import itis.semestrovka.memo.game.Board;
+import itis.semestrovka.memo.game.Cell;
+import itis.semestrovka.memo.protocol.Message;
 import itis.semestrovka.memo.server.Room;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -15,10 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static java.lang.Thread.sleep;
+
 public class CreateRoomController implements Initializable {
 
     @FXML
@@ -42,8 +45,6 @@ public class CreateRoomController implements Initializable {
     private ChoiceBox<Integer> choiceNumber;
     @FXML
     private TextField roomName;
-    private Stage stage;
-    private Scene scene;
     private Parent root;
     private Client client;
     public static List<String> messages = new ArrayList<>();
@@ -60,16 +61,15 @@ public class CreateRoomController implements Initializable {
         create.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                String messageToSend = roomName.getText();
+                String roomNameText = roomName.getText();
                 Integer number = choiceNumber.getValue();
                 String player = playerName.getText();
-                Room room = new Room(messageToSend, number);
-                if (!messageToSend.isEmpty() && !player.isEmpty()) {
-
-                    client.sendMessage(messageToSend + ";" + number + ";" + player);
+                Room room = new Room(roomNameText, number);
+                if (!roomNameText.isEmpty() && !player.isEmpty()) {
+                    client.sendMessage(Message.createMessage("room", roomNameText + ";" + number + ";" + player));
                     client.setPlayerName(player);
 
-                    System.out.println(messageToSend + ";" + number + ";" + player);
+                    System.out.println(roomNameText + ";" + number + ";" + player);
 
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
@@ -80,24 +80,34 @@ public class CreateRoomController implements Initializable {
                         gameController.setClient(client);
                         gameController.setRoom(room);
 
-                        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                        Board board = new Board();
+                        board.setBoardSize(room.getMaxSize());
+                        Cell[][] newBoard = board.populateMatrix();
+
+                        String s = "";
+                        for(int i = 0; i <= newBoard.length - 1; i++){
+                            for(int j = 0; j <= newBoard[0].length - 1; j++){
+                                s += (newBoard[i][j].value + ";");
+                            }
+                        }
+                        GameController.setBoard(board);
+                        client.sendMessage(Message.createMessageToRoom("board", roomNameText, s));
+                        Scene scene;
                         int x;
                         int y;
                         if(room.getMaxSize() == 2){
                             x = 800;
                             y = 800;
-                            stage.setScene(new Scene(root, x, y));
+                            scene = new Scene(root, x, y);
                         } else if (room.getMaxSize() == 3) {
                             x = 1300;
                             y = 800;
-                            stage.setScene(new Scene(root, x, y));
+                            scene = new Scene(root, x, y);
                         }
                         else{
-                            stage.setScene(new Scene(root));
-                            stage.setFullScreen(true);
+                            scene = new Scene(root);
                         }
-
-                        stage.show();
+                        ClientApplication.setScene(scene);
 
                         roomName.clear();
                         playerName.clear();

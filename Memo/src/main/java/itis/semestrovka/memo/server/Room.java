@@ -13,50 +13,76 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
 
-public class Room implements Runnable{
+public class Room{
 
     private String name;
     private Integer maxSize;
     public static Set<Room> rooms = new HashSet<>();
     private List<Connection> connections = new ArrayList<>();
-    private Thread thread;
+    private HashMap<String, Integer> marks = new HashMap<>();
+    private int count = 0;
+    private int maxCount;
+
+    public HashMap<String, Integer> getMarks() {
+        return marks;
+    }
+
+    public void setMarks(String s, Integer k) {
+        if(marks.containsKey(s)){
+            int x = marks.get(s);
+            marks.remove(s);
+            marks.put(s, (k + x));
+        }
+        else{
+            this.marks.put(s, k);
+        }
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count += count;
+    }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
+    }
+
+    private List<String> messages = new ArrayList<>();
     private GameController gameController;
 
     public Room(String name, Integer maxSize) {
         this.name = name;
         this.maxSize = maxSize;
 
+        if(maxSize == 2){
+            this.maxCount = 18;
+        } else if (maxSize == 3) {
+            this.maxCount = 42;
+        }
+        else {
+            this.maxCount = 52;
+        }
+
         rooms.add(this);
 
-        this.thread = new Thread(this);
-        thread.start();
-    }
-    @Override
-    public void run() {
-//        boolean flag = true;
-//        System.out.println(1114576);
-//        while (flag){
-//            if(connections.size() != maxSize) {
-//                try {
-//                    System.out.println(5465767);
-//                    String message = Message.createMessage("info",
-//                            "Недостаточное количество участников : " + connections.size() + " / " + maxSize);
-//
-//                    sendMessage(message);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//            else {
-//                flag = false;
-//            }
-//        }
     }
 
+    public void createMessages(){
+        for(Connection c : connections){
+            messages.add(c.getPlayerName() + ";" + c.getPlayerName() + " делает ход");
+        }
+    }
     private String receiveMessage(){
         return "";
     }
-    private void sendMessage(String s) throws IOException {
+    public void sendMessage(String s) throws IOException {
         System.out.println(connections);
         System.out.println(s);
         for(Connection c : connections){
@@ -66,6 +92,7 @@ public class Room implements Runnable{
             System.out.println(43543566);
         }
     }
+
 
 
     public String getName() {
@@ -84,6 +111,9 @@ public class Room implements Runnable{
         this.maxSize = maxSize;
     }
 
+    public int getMaxCount() {
+        return maxCount;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -128,13 +158,15 @@ public class Room implements Runnable{
         if(connections.size() != maxSize) {
             System.out.println(5465767);
             String message = Message.createMessage("info",
-                    "Недостаточное количество участников : " + connections.size() + " / " + maxSize);
+                    " Недостаточное количество участников : " + connections.size() + " / " + maxSize);
             sendMessage(message);
         }
         else {
             String message = Message.createMessage("info",
-                    "Начинаем");
+                    " Начинаем");
             sendMessage(message);
+            createMessages();
+            sendMessage(Message.createMessage("priority", messages.get(0)));
         }
     }
 }
