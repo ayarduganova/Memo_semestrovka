@@ -20,6 +20,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -51,6 +52,7 @@ public class GameController implements Initializable {
     public static Cell secondCard;
     private static Parent root;
     private static GameProcessListener gameProcessListener;
+    public static VBox vBox;
 
     public static void addInfo(String newInfo, Label info, GridPane gameMatrix) {
         System.out.println("trnbfybytbt");
@@ -131,6 +133,7 @@ public class GameController implements Initializable {
 
     public static void getFinal(String mes, Label info) {
 
+        gameProcessListener.interrupt();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -138,18 +141,18 @@ public class GameController implements Initializable {
 
                 if(strings.length > 2){
                     if(strings[1].equals(client.getPlayerName()) || strings[2].equals(client.getPlayerName())){
-                        info.setText("Вы выиграли");
+                        info.setText(" Ничья");
                     }
                     else {
-                        info.setText(strings[0] + " и " + strings[1] + " выиграли");
+                        info.setText(" " + strings[1] + " и " + strings[2] + " выиграли");
                     }
                 }
                 if(strings.length == 2){
                     if(strings[1].equals(client.getPlayerName())){
-                        info.setText("Вы выиграли");
+                        info.setText(" Вы выиграли");
                     }
                     else{
-                        info.setText(strings[0] +  "выиграл");
+                        info.setText(" " + strings[1] +  " выиграл");
                     }
 
                 }
@@ -284,7 +287,7 @@ public class GameController implements Initializable {
 
         System.out.println("Мой ник : " + client.getPlayerName());
 
-        gameProcessListener = new GameProcessListener(info, client.getBufferedReader(), gameMatrix, mark);
+        gameProcessListener = new GameProcessListener(info, client.getBufferedReader(), gameMatrix, mark, vBox);
         gameProcessListener.start();
     }
 
@@ -298,4 +301,7 @@ public class GameController implements Initializable {
     }
 
 
+    public void setVbox(VBox vboxMessages) {
+        vBox = vboxMessages;
+    }
 }

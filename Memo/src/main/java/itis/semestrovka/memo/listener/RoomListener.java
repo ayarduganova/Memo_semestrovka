@@ -1,6 +1,7 @@
 package itis.semestrovka.memo.listener;
 
 import itis.semestrovka.memo.controllers.EnterToRoomController;
+import itis.semestrovka.memo.controllers.GameController;
 import javafx.scene.layout.VBox;
 
 import java.io.BufferedReader;
@@ -41,6 +42,16 @@ public class RoomListener extends Thread {
                     String[] strings = room.split(";");
 
                     EnterToRoomController.addLabel(strings[0], strings[1], vBox);
+
+                } else if (message.contains("type=info")) {
+
+                    String[] mess = message.split(";");
+
+                    System.out.println(mess[2]);
+                    if (mess[2].equals(" Начинаем")){
+                        EnterToRoomController.deleteRoom(mess[1].substring(5), vBox);
+                        System.out.println(mess[1].substring(5));
+                    }
 
                 }
             } catch (IOException e) {

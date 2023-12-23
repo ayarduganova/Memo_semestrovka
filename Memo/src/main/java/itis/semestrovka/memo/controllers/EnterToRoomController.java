@@ -37,10 +37,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 
 public class EnterToRoomController implements Initializable {
@@ -56,6 +53,7 @@ public class EnterToRoomController implements Initializable {
     private Client client;
     private Parent root;
     public static List<Room> rooms = new ArrayList<>();
+    public static HashMap<String, HBox> hboxes = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -100,6 +98,7 @@ public class EnterToRoomController implements Initializable {
 
             textFlow.setPadding(new Insets(5, 10, 5, 10));
             hBox.getChildren().add(textFlow);
+            hboxes.put(messageFromServer, hBox);
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -107,6 +106,23 @@ public class EnterToRoomController implements Initializable {
                 }
             });
         }
+    }
+    public static void deleteRoom(String room, VBox vBox){
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                List<String> keys = new ArrayList<String>(hboxes.keySet());
+                for (int i = 0; i < keys.size(); i++) {
+                    String key = keys.get(i);
+                    HBox value;
+                    if(room.equals(key)){
+                        value = hboxes.get(key);
+                        vBox.getChildren().remove(value);
+                    }
+                }
+            }
+        });
     }
 
     public void switchToGame(ActionEvent event) throws IOException {
@@ -129,6 +145,7 @@ public class EnterToRoomController implements Initializable {
             }
 
             GameController gameController = loader.getController();
+            gameController.setVbox(vbox_messages);
             gameController.setClient(client);
             Room room = null;
             for(Room r : rooms){

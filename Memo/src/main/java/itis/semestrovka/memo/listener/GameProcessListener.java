@@ -5,6 +5,7 @@ import itis.semestrovka.memo.controllers.GameController;
 import itis.semestrovka.memo.game.Board;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,12 +17,14 @@ public class GameProcessListener extends Thread{
     private BufferedReader br;
     private GridPane gameMatrix;
     private Label mark;
+    private VBox vBox;
 
-    public GameProcessListener(Label info, BufferedReader br, GridPane gameMatrix, Label mark){
+    public GameProcessListener(Label info, BufferedReader br, GridPane gameMatrix, Label mark, VBox vBox){
         this.info = info;
         this.br = br;
         this.gameMatrix = gameMatrix;
         this.mark = mark;
+        this.vBox = vBox;
     }
 
 
@@ -37,11 +40,14 @@ public class GameProcessListener extends Thread{
 
                 if (mes.contains("type=info")) {
 
-                    String mess = mes.substring(10);
+                    String[] mess = mes.split(";");
 
-                    System.out.println(mess);
+                    System.out.println(mess[2]);
+                     if (mess[2].equals(" Начинаем")){
+                         EnterToRoomController.deleteRoom(mess[1].substring(6), vBox);
+                     }
 
-                    GameController.addInfo(mess, info, gameMatrix);
+                    GameController.addInfo(mess[2], info, gameMatrix);
 
                 } else if (mes.contains("type=board")) {
 

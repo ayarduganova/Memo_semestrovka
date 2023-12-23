@@ -157,15 +157,16 @@ public class Room{
         this.connections.add(connection);
         if(connections.size() != maxSize) {
             System.out.println(5465767);
-            String message = Message.createMessage("info",
+            String message = Message.createMessageToRoom("info", name,
                     " Недостаточное количество участников : " + connections.size() + " / " + maxSize);
             sendMessage(message);
         }
         else {
-            String message = Message.createMessage("info",
+            String message = Message.createMessageToRoom("info", name,
                     " Начинаем");
-            sendMessage(message);
+            Connection.sendMessageToDelete(message);
             createMessages();
+            System.out.println(messages);
             sendMessage(Message.createMessage("priority", messages.get(0)));
         }
     }

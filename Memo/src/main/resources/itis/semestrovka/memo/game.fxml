@@ -14,19 +14,22 @@
                         <HBox fx:id="menuPanel">
                             <Label fx:id="you" layoutX="-165.0" layoutY="245.0" />
                             <Label fx:id="game" layoutX="-165.0" layoutY="245.0" />
-                            <Label fx:id="info" layoutX="-165.0" layoutY="245.0" />
+                            <Label fx:id="info" alignment="CENTER" contentDisplay="CENTER" layoutX="-165.0" layoutY="245.0" prefHeight="72.0" text="Недостаточное количество участников" BorderPane.alignment="CENTER">
+                        <font>
+                           <Font size="24.0" />
+                        </font></Label>
                         </HBox>
                     </top>
                     <center>
                         <HBox alignment="CENTER">
                             <GridPane fx:id="gameMatrix" alignment="CENTER" hgap="10" prefHeight="352.0" prefWidth="444.0" vgap="10" xmlns:fx="http://javafx.com/fxml">
                                 <padding><Insets bottom="25" left="25" right="25" top="25" /></padding>
-                        <columnConstraints>
-                           <ColumnConstraints />
-                        </columnConstraints>
-                        <rowConstraints>
-                           <RowConstraints />
-                        </rowConstraints>
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                </rowConstraints>
 
                             </GridPane>
                         </HBox>
