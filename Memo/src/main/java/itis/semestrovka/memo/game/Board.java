@@ -80,8 +80,8 @@ public class Board {
     }
 
     private boolean isBoardFull() {
-        for(int i = 0; i < 6; i++){
-            for(int j = 0; j < 6; j++){
+        for(int i = 0; i < boardRow; i++){
+            for(int j = 0; j < boardCol; j++){
                 if(board[i][j] == null){
                     return false;
                 }

@@ -233,6 +233,7 @@ public class GameController implements Initializable {
         if(firstCard == null){
             if(!board.board[row][col].wasGuessed){
                 firstCard = board.board[row][col];
+                board.board[firstCard.row][firstCard.col].wasGuessed = true;
             }
         }else if(secondCard ==null){
             if(!board.board[row][col].wasGuessed){
@@ -247,6 +248,8 @@ public class GameController implements Initializable {
 
                     m = "1";
                 } else {
+
+                    board.board[firstCard.row][firstCard.col].wasGuessed = false;
 
                     int indexFirstCardInList = (firstCard.row * board.getBoardCol()) + firstCard.col;
                     Image questionImage = new Image(new FileInputStream("flower.png"));int indexSecondCardInList = (secondCard.row * board.getBoardCol()) + secondCard.col;
@@ -284,11 +287,9 @@ public class GameController implements Initializable {
     public void setClient(Client client) {
         this.client = client;
         you.setText("Мой ник : " + client.getPlayerName());
-
-        System.out.println("Мой ник : " + client.getPlayerName());
-
         gameProcessListener = new GameProcessListener(info, client.getBufferedReader(), gameMatrix, mark, vBox);
         gameProcessListener.start();
+        System.out.println("game start");
     }
 
     public void setRoom(Room room) {

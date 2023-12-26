@@ -30,7 +30,10 @@ public class ClientApplication extends Application {
         return stage;
     }
 
-    public static void setScene(Scene scene) {
+    public static void setScene(Scene scene, Boolean isFullScreen) {
         stage.setScene(scene);
+        if(isFullScreen){
+            stage.setFullScreen(true);
+        }
     }
 }

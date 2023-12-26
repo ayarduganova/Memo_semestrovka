@@ -83,7 +83,6 @@ public class CreateRoomController implements Initializable {
                         Board board = new Board();
                         board.setBoardSize(room.getMaxSize());
                         Cell[][] newBoard = board.populateMatrix();
-
                         String s = "";
                         for(int i = 0; i <= newBoard.length - 1; i++){
                             for(int j = 0; j <= newBoard[0].length - 1; j++){
@@ -95,6 +94,7 @@ public class CreateRoomController implements Initializable {
                         Scene scene;
                         int x;
                         int y;
+                        boolean isFullScreen = false;
                         if(room.getMaxSize() == 2){
                             x = 800;
                             y = 800;
@@ -106,8 +106,9 @@ public class CreateRoomController implements Initializable {
                         }
                         else{
                             scene = new Scene(root);
+                            isFullScreen = true;
                         }
-                        ClientApplication.setScene(scene);
+                        ClientApplication.setScene(scene, isFullScreen);
 
                         roomName.clear();
                         playerName.clear();

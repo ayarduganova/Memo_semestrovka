@@ -5,18 +5,18 @@ import itis.semestrovka.memo.controllers.GameController;
 import javafx.scene.layout.VBox;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class RoomListener extends Thread {
     private VBox vBox;
     private BufferedReader br;
 
-    private boolean state;
+    private boolean state = true;
 
     public RoomListener(VBox vBox, BufferedReader br) {
         this.vBox = vBox;
         this.br = br;
-        this.state = true;
     }
 
     @Override
@@ -24,11 +24,7 @@ public class RoomListener extends Thread {
         String message;
         while (state) {
             try {
-//                try {
-////                    sleep(8000);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
+
                 message = this.br.readLine();
 
                 System.out.println("получили : " + message);
@@ -43,14 +39,17 @@ public class RoomListener extends Thread {
 
                     EnterToRoomController.addLabel(strings[0], strings[1], vBox);
 
-                } else if (message.contains("type=info")) {
+                } else {
 
                     String[] mess = message.split(";");
-
-                    System.out.println(mess[2]);
-                    if (mess[2].equals(" Начинаем")){
-                        EnterToRoomController.deleteRoom(mess[1].substring(5), vBox);
-                        System.out.println(mess[1].substring(5));
+                    if(mess.length >= 3){
+                        System.out.println(mess[2]);
+                        if (mess[2].equals(" Начинаем")){
+                            EnterToRoomController.deleteRoom(mess[1].substring(5), vBox);
+                            System.out.println(mess[1].substring(5));
+                        } else if (mess[2].equals("state")) {
+                            changeState();
+                        }
                     }
 
                 }
@@ -68,7 +67,4 @@ public class RoomListener extends Thread {
         return state;
     }
 
-    public void setState(boolean state) {
-        this.state = state;
-    }
 }

@@ -1,11 +1,7 @@
 package itis.semestrovka.memo.server;
 
-import itis.semestrovka.memo.client.Client;
-import itis.semestrovka.memo.controllers.DataHolder;
 import itis.semestrovka.memo.game.Player;
 import itis.semestrovka.memo.protocol.Message;
-import javafx.application.Platform;
-import javafx.print.PageLayout;
 
 import java.io.*;
 import java.net.Socket;
@@ -14,8 +10,8 @@ import java.util.*;
 public class Connection implements Runnable {
 
     public static List<Connection> connections = new ArrayList<>();
-    public HashMap<Room, List<Connection>> roomsWithConnections;
-    public static Set<Room> rooms = new HashSet<>();
+    public static Set<Room> allRooms = new HashSet<>();
+    public static Set<Room> openRooms = new HashSet<>();
     private Thread thread;
     public BufferedWriter writer;
     public BufferedReader reader;
@@ -28,7 +24,7 @@ public class Connection implements Runnable {
         this.reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
         this.thread = new Thread(this);
         connections.add(this);
-        sendMessages(rooms, this);
+        sendRoomMessages(openRooms, this);
         thread.start();
     }
 
@@ -45,7 +41,8 @@ public class Connection implements Runnable {
 
                     Room room = new Room(strings[1], Integer.parseInt(strings[2]));
 
-                    rooms.add(room);
+                    openRooms.add(room);
+                    allRooms.add(room);
 
                     setPlayerName(strings[3]);
 
@@ -55,7 +52,7 @@ public class Connection implements Runnable {
 
                 } else if (message.contains("type=enter")) {
 
-                    for (Room r : rooms) {
+                    for (Room r : openRooms) {
                         if (r.getName().equals(strings[1])) {
 
 //                            roomsWithConnections.get(r).add(this);
@@ -72,7 +69,7 @@ public class Connection implements Runnable {
                     writer.newLine();
                     writer.flush();
 
-                    for (Room r : rooms) {
+                    for (Room r : allRooms) {
                         if (r.getName().equals(strings[1].substring(5))) {
                             r.setCount(Integer.parseInt(strings[3]));
                             r.setMarks(strings[2], Integer.parseInt(strings[3]));
@@ -105,7 +102,7 @@ public class Connection implements Runnable {
 
                 } else if (message.contains("type=openCards")) {
 
-                    for (Room r : rooms) {
+                    for (Room r : allRooms) {
 
                         if (r.getName().equals(strings[1].substring(5))) {
                             boolean flag = true;
@@ -118,8 +115,8 @@ public class Connection implements Runnable {
                     }
 
                 } else if (message.contains("type=priority")) {
-
-                    for (Room r : rooms) {
+                    System.out.println(allRooms);
+                    for (Room r : allRooms) {
                         if (r.getName().equals(strings[1].substring(5))) {
                             int i = 0;
                             System.out.println(r.getMessages());
@@ -141,11 +138,13 @@ public class Connection implements Runnable {
                     for (int i = 2; i < strings.length; i++) {
                         m += (strings[i] + ";");
                     }
-                    for (Room r : rooms) {
+                    for (Room r : allRooms) {
                         if (r.getName().equals(strings[1].substring(5))) {
                             boolean flag = true;
                             while (flag) {
                                 if (r.getMaxSize() == r.getConnections().size()) {
+                                    r.sendMessage(Message.createMessageToRoom("info", r.getName(),
+                                            "state"));
                                     r.sendMessage(Message.createMessage("board", m));
                                     flag = false;
                                 }
@@ -162,7 +161,7 @@ public class Connection implements Runnable {
         }
     }
 
-    private void sendMessages(Set<Room> rooms, Connection c) throws IOException {
+    private void sendRoomMessages(Set<Room> rooms, Connection c) throws IOException {
         for (Room r : rooms) {
             c.writer.write(Message.createMessage("room", r.getName() + ";" + r.getMaxSize()));
             c.writer.newLine();
@@ -179,11 +178,11 @@ public class Connection implements Runnable {
     }
     public static void sendMessageToDelete(String message) throws IOException {
         String[]strings = message.split(";");
-        for(Room r : rooms){
+        for(Room r : openRooms){
             System.out.println(r.getName());
             System.out.println(strings[1].substring(5));
             if(r.getName().equals(strings[1].substring(5))){
-                rooms.remove(r);
+                openRooms.remove(r);
                 System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
             }
         }
@@ -196,7 +195,7 @@ public class Connection implements Runnable {
     }
 
     public static void sendMessageInRoom(Room room, String s) throws IOException {
-        for (Room r : rooms) {
+        for (Room r : openRooms) {
             if (r.equals(room)) {
                 List<Connection> connections = r.getConnections();
                 System.out.println(connections);

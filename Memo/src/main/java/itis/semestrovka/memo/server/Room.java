@@ -3,6 +3,7 @@ package itis.semestrovka.memo.server;
 import itis.semestrovka.memo.client.Client;
 import itis.semestrovka.memo.controllers.GameController;
 import itis.semestrovka.memo.game.Player;
+import itis.semestrovka.memo.listener.RoomListener;
 import itis.semestrovka.memo.protocol.Message;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -83,13 +84,10 @@ public class Room{
         return "";
     }
     public void sendMessage(String s) throws IOException {
-        System.out.println(connections);
-        System.out.println(s);
         for(Connection c : connections){
             c.writer.write(s);
             c.writer.newLine();
             c.writer.flush();
-            System.out.println(43543566);
         }
     }
 
@@ -156,7 +154,8 @@ public class Room{
     public void setConnection(Connection connection) throws IOException {
         this.connections.add(connection);
         if(connections.size() != maxSize) {
-            System.out.println(5465767);
+            sendMessage(Message.createMessageToRoom("info", name,
+                    "state"));
             String message = Message.createMessageToRoom("info", name,
                     " Недостаточное количество участников : " + connections.size() + " / " + maxSize);
             sendMessage(message);

@@ -125,18 +125,8 @@ public class EnterToRoomController implements Initializable {
         });
     }
 
-    public void switchToGame(ActionEvent event) throws IOException {
-
-        roomListener.changeState();
-
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
-        pause.setOnFinished( actionEvent -> {
-
-
-            client.setPlayerName(playerName.getText());
-            client.sendMessage(Message.createMessage("enter", roomName.getText() + ";" + client.getPlayerName()));
-
-
+    public void switchToGame(ActionEvent event) throws IOException, InterruptedException {
+        client.setPlayerName(playerName.getText());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/itis/semestrovka/memo/game.fxml"));
             try {
                 root = loader.load();
@@ -145,8 +135,8 @@ public class EnterToRoomController implements Initializable {
             }
 
             GameController gameController = loader.getController();
-            gameController.setVbox(vbox_messages);
             gameController.setClient(client);
+            gameController.setVbox(vbox_messages);
             Room room = null;
             for(Room r : rooms){
                 if(r.getName().equals(roomName.getText())){
@@ -154,10 +144,10 @@ public class EnterToRoomController implements Initializable {
                     gameController.setRoom(r);
                 }
             }
-
             Scene scene;
             int x;
             int y;
+            boolean isFullScreen = false;
             if(room.getMaxSize() == 2){
                 x = 800;
                 y = 800;
@@ -169,12 +159,10 @@ public class EnterToRoomController implements Initializable {
             }
             else{
                 scene = new Scene(root);
+                isFullScreen = true;
             }
-
-            ClientApplication.setScene(scene);
-
-        });
-        pause.play();
+            ClientApplication.setScene(scene, isFullScreen);
+        client.sendMessage(Message.createMessage("enter", roomName.getText() + ";" + client.getPlayerName()));
 
     }
 
